@@ -129,7 +129,15 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
     // insert the key-value pair in the subtree rooted at h
     private Node put(Node h, Key key, Value val) {
         //TO BE IMPLEMENTED
-        
+        if (h == null) return new Node(key, val, RED, 1);
+        int cmp = key.compareTo(h.key);
+        if (cmp < 0) h.left = put(h.left, key, val);
+        else if (cmp > 0) h.right = put(h.right, key, val);
+        else h.val = val;
+        if (isRed(h.right) && !isRed(h.left)) h = rotateLeft(h);
+        if (isRed(h.left) && isRed(h.left.left)) h = rotateRight(h);
+        if (isRed(h.left) && isRed(h.right)) flipColors(h);
+        return h;
     }
 
     /***************************************************************************
@@ -253,13 +261,23 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
     // make a left-leaning link lean to the right
     private Node rotateRight(Node h) {
         //TO BE IMPLEMENTED
-       
+        Node temp = h.left;
+        h.left = temp.right;
+        temp.right = h;
+        temp.color = h.color;
+        h.color = RED;
+        return temp;
     }
 
     // make a right-leaning link lean to the left
     private Node rotateLeft(Node h) {
         //TO BE IMPLEMENTED
-       
+        Node temp = h.right;
+        h.right = temp.left;
+        temp.left = h;
+        temp.color = h.color;
+        h.color = RED;
+        return temp;
     }
 
     // flip the colors of a node and its two children
